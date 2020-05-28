@@ -8,6 +8,9 @@ BiocManager::install("gdata")
 library("gdata")
 library("Biostrings")
 
+#setwd() to wherever these files are located, or specify full filepaths for import and export of files
+
+
 ##PART ONE##
 #PREPARATION OF THE ID to TAXONOMY FILE
 #LOAD THE FILES 
@@ -75,12 +78,6 @@ str(all.ordered_taxo)
 write.table(all.ordered_taxo, "maarjAM_qiime_taxonomy.txt", sep = "\t",
             row.names = FALSE, col.names = FALSE, quote = FALSE)
 
-#qiime import command (for command line):
-qiime tools import \
---type 'FeatureData[Taxonomy]' \
---input-format HeaderlessTSVTaxonomyFormat \
---input-path maarjam/maarjAM_qiime_taxonomy.txt \
---output-path ref-taxonomy_maarjAM.qza
 
 ##PART TWO##
 #PREPARATION OF THE FASTA FILE
@@ -120,14 +117,8 @@ sed -e '/^[^>]/s/[^ATGCatgc]/N/g'|\
 sed 's/_.*//' |\
 awk '/^>/{f=!d[$1];d[$1]=1}f' > maarjAM_all_clean.fasta
 
-#qiime import command:
-qiime tools import \
---type 'FeatureData[Sequence]' \
---input-path maarjAM_all_clean.fasta \
---output-path maarjAM.qza
 
-
-#PREPARATION OF THE MaarjAM-specific VIRTUAL TAXA FASTA FILE
+#PREPARATION OF THE MaarjAM-specific VIRTUAL TAXA FASTA FILE  ##I (Dan) have not even used this file...but theoretically would only classify SSU taxa that have curated virtual taxa IDs
 vt.seq <- readBStringSet("/Users/danielrevillini/Documents/ABS_gap/QIIME/maarjam/vt_types_fasta_from_05-06-2019.txt", "fasta") # for production
 names(vt.seq) <- gsub("gb\\|(.*)_(.*)", "\\1 \\2", names(vt.seq))
 
